@@ -1,5 +1,6 @@
 "use client";
 import React, { useReducer } from 'react'
+import Coin from './_components/Coin';
 interface State {
   ethValue: number;
   weiValue: number;
@@ -47,7 +48,7 @@ export default function Home() {
     dispatch({ name: name as keyof State, value: parseFloat(value) });
   };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex flex-col gap-6 items-center justify-between p-24">
       <h3>Ethereum (ETH) Converter</h3>
       <label>
         ETH:
@@ -79,6 +80,7 @@ export default function Home() {
           onChange={handleChange}
         />
       </label>
+      <Coin />
     </main>
   );
 }
