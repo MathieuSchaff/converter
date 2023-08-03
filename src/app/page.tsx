@@ -2,35 +2,43 @@
 import React, { useReducer } from 'react'
 import Coin from './_components/Coin';
 interface State {
-  ethValue: number;
-  weiValue: number;
-  gweiValue: number;
+  ethValue: number | string;
+  weiValue: number | string;
+  gweiValue: number | string;
 }
 
 type Action = {
   name: keyof State;
-  value: number;
+  value: string;
 };
 const reducer = (state: State, action: Action): State => {
   const { name, value } = action;
+  const numberValue = parseFloat(value);
+  if (Number.isNaN(numberValue)) {
+    return {
+      ethValue: "",
+      weiValue: "",
+      gweiValue: "",
+    }
+  }
   switch (name) {
     case 'ethValue':
       return {
-        ethValue: value,
-        weiValue: value * 10 ** 18,
-        gweiValue: value * 10 ** 9,
+        ethValue: numberValue,
+        weiValue: numberValue * 10 ** 18,
+        gweiValue: numberValue * 10 ** 9,
       };
     case 'weiValue':
       return {
-        ethValue: value / 10 ** 18,
-        weiValue: value,
-        gweiValue: value / 10 ** 9,
+        ethValue: numberValue / 10 ** 18,
+        weiValue: numberValue,
+        gweiValue: numberValue / 10 ** 9,
       };
     case 'gweiValue':
       return {
-        ethValue: value / 10 ** 9,
-        weiValue: value * 10 ** 9,
-        gweiValue: value,
+        ethValue: numberValue / 10 ** 9,
+        weiValue: numberValue * 10 ** 9,
+        gweiValue: numberValue,
       };
     default:
       return state;
@@ -45,7 +53,7 @@ export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
-    dispatch({ name: name as keyof State, value: parseFloat(value) });
+    dispatch({ name: name as keyof State, value: parseFloat(value).toString() });
   };
   return (
     <main className="flex flex-col gap-6 items-center justify-between p-24">
