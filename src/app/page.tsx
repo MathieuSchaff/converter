@@ -52,6 +52,7 @@ const initialState = {
 export default function Home() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (parseFloat(e.target.value) < 0) return;
     const { name, value } = e.target;
     dispatch({ name: name as keyof State, value: parseFloat(value).toString() });
   };
