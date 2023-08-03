@@ -6,21 +6,23 @@ import React, { useMemo, useState } from 'react';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import useSWR from 'swr';
 interface EthPriceData {
-  [currency: string]: number;
+  [currency: string]: { usd: number };
 }
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: 'https://api.coingecko.com/api/v3/simple/',
 });
-type GetPrice = (args: string[]) => Promise<EthPriceData>;
+type GetPriceArg = [string, { ids: string, vs_currencies: string }];
+type GetPrice = (args: GetPriceArg) => Promise<EthPriceData>;
 const getPrice: GetPrice = async (args) => {
-  console.log(args);
+  // console.log(args);
   const response: AxiosResponse<EthPriceData> = await axiosInstance.get<EthPriceData>(args[0], {
     params: args[1],
   });
   const ethPriceData: EthPriceData = response.data;
   return ethPriceData;
 }
-const Coin = () => {
+
+const Coin = ({ ethValue }: { ethValue: number }) => {
   // const [coinPrice, setCoinPrice] = useState<EthPriceData>();
   const [currency, setCurrency] = useState<string>("usd");
   const params = useMemo(() => {
@@ -30,13 +32,29 @@ const Coin = () => {
     };
   }, [currency]);
 
-  const { data, error, mutate, isLoading } = useSWR(["/price", params], getPrice);
+  const { data, error, mutate, isLoading } = useSWR(["/price", params], getPrice, {
+    errorRetryInterval: 60 * 1000,
+    errorRetryCount: 3,
+  }
+  );
+
+  if (error) console.error(error)
+  let priceUsd;
+  if (data) {
+    console.log("data")
+    console.log(data.ethereum.usd)
+    console.log(ethValue)
+    priceUsd = data.ethereum.usd * ethValue;
+
+  }
+  console.log("priceUsd", priceUsd)
   return (<div>
     <h3>Coin</h3>
     <div>
-      {/* {coinPrice && JSON.stringify(coinPrice)} */}
+      {/* <button onClick={() => setCurrency("usd")}>USD</button> */}
+      {priceUsd && priceUsd > 0 ? <div>{priceUsd}</div> : '0 $'}
+      {error && <div>Failed to fetched price</div>}
       {isLoading && <div>Loading...</div>}
-      {data && JSON.stringify(data)}
     </div>
   </div>);
 }

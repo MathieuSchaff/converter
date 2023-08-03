@@ -80,7 +80,7 @@ export default function Home() {
           onChange={handleChange}
         />
       </label>
-      <Coin />
+      <Coin ethValue={state.ethValue} />
     </main>
   );
 }
