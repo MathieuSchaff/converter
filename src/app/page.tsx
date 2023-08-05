@@ -1,6 +1,7 @@
 "use client";
 import React, { useReducer } from 'react'
 import Coin from './_components/Coin';
+import GasPriceComponent from './_components/Gas';
 interface State {
   ethValue: number | string;
   weiValue: number | string;
@@ -90,6 +91,7 @@ export default function Home() {
         />
       </label>
       <Coin ethValue={state.ethValue} />
+      <GasPriceComponent />
     </main>
   );
 }
