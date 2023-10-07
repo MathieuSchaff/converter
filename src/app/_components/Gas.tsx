@@ -5,7 +5,9 @@ import axios, { AxiosResponse } from 'axios';
 // import { ethers } from "ethers";
 
 interface GasPriceData {
-  fast: number;
+  result: {
+    SafeGasPrice: number;
+  }
   // You can add other gas price types here, like "standard" or "slow"
 }
 
@@ -28,11 +30,12 @@ const GasPriceComponent: React.FC = () => {
   if (error) {
     return <div>Error fetching gas price.</div>;
   }
-  console.log(gasPrice);
+  // console.log(gasPrice);
   return (
     <div>
       {/* {error && <div>Error fetching gas price.</div>} */}
-      {gasPrice ? <p>Ethereum Gas Price: {gasPrice.fast} Gwei</p> : <p>Loading gas price...</p>}
+      {/* {gasPrice && <div>Gas Price: {JSON.stringify(gasPrice)} Gwei</div>} */}
+      {gasPrice ? <p>Ethereum Gas Price: {gasPrice.result.SafeGasPrice} Gwei</p> : <p>Loading gas price...</p>}
     </div>
   );
 };

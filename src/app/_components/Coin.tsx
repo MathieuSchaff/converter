@@ -32,8 +32,9 @@ const Coin = ({ ethValue }: { ethValue: string | number }) => {
     vs_currencies: 'usd',
   }
   const { data, error, mutate, isValidating } = useSWR(["/price", params], getPrice, {
-    errorRetryInterval: 60 * 1000,
-    errorRetryCount: 3,
+    refreshWhenHidden: false,
+    revalidateOnFocus: false,
+    refreshInterval: 0,
   }
   );
 
@@ -46,7 +47,8 @@ const Coin = ({ ethValue }: { ethValue: string | number }) => {
   const handleRefresh = () => {
     mutate();
   };
-  return (<div className="container mx-auto mt-8 max-w-md">
+  console.log(data);
+  return (<div className="mt-8">
     <h3 className="text-xl font-semibold mb-4">Coin Price</h3>
     {isValidating && <div className="mb-2">Loading...</div>}
     {!isValidating && (
